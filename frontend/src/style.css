@@ -2,11 +2,11 @@
   color-scheme: light;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
   font-optical-sizing: auto;
-  background: #f5f5f7;
+  background: transparent;
   color: #1d1d1f;
   --canvas: #f5f5f7;
   --content: #fbfbfc;
-  --sidebar: rgba(235, 235, 240, 0.72);
+  --sidebar: rgba(235, 235, 240, 0.62);
   --toolbar: rgba(251, 251, 252, 0.76);
   --material: rgba(255, 255, 255, 0.78);
   --material-strong: #ffffff;
@@ -26,11 +26,11 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  background: #171719;
+  background: transparent;
   color: #f5f5f7;
   --canvas: #171719;
   --content: #1d1d1f;
-  --sidebar: rgba(41, 41, 45, 0.78);
+  --sidebar: rgba(41, 41, 45, 0.66);
   --toolbar: rgba(29, 29, 31, 0.76);
   --material: rgba(52, 52, 56, 0.8);
   --material-strong: #303034;
@@ -48,13 +48,15 @@
   --shadow: 0 22px 58px rgba(0, 0, 0, 0.36);
 }
 
+html { overflow: hidden; }
 * { box-sizing: border-box; }
 
 body {
   min-width: 760px;
   min-height: 100vh;
   margin: 0;
-  background: var(--canvas);
+  overflow: hidden;
+  background: transparent;
   color: var(--text);
 }
 
@@ -68,7 +70,9 @@ button:focus-visible, textarea:focus-visible { outline: 3px solid color-mix(in s
   position: relative;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: calc(100vh - 16px);
+  margin: 8px;
+  border-radius: 14px;
   overflow: hidden;
   background: var(--canvas);
 }
@@ -88,8 +92,8 @@ button:focus-visible, textarea:focus-visible { outline: 3px solid color-mix(in s
 .window-titlebar-content { display: flex; align-items: center; justify-content: space-between; height: 34px; padding: 0 14px 0 38px; background: transparent; }
 
 .window-controls { display: flex; align-items: center; gap: 8px; }
-.new-chat-titlebar { display: grid; width: 24px; height: 24px; place-items: center; margin-left: auto; padding: 0; border: 0; border-radius: 7px; background: transparent; color: var(--secondary); transition: background 140ms ease, color 140ms ease, transform 100ms ease-out; }
-.new-chat-titlebar:hover { background: var(--fill-hover); color: var(--text); }
+.new-chat-titlebar { display: grid; width: 28px; height: 28px; place-items: center; margin-top: 8px; margin-left: auto; padding: 0; border: 1px solid color-mix(in srgb, var(--separator) 90%, transparent); border-radius: 50%; background: color-mix(in srgb, var(--fill) 88%, transparent); color: var(--secondary); box-shadow: inset 0 1px rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.14); backdrop-filter: blur(16px) saturate(150%); transition: background 140ms ease, border-color 140ms ease, color 140ms ease, transform 100ms ease-out; }
+.new-chat-titlebar:hover { border-color: var(--separator); background: var(--fill-hover); color: var(--text); }
 .new-chat-titlebar:active { transform: scale(0.92); }
 .new-chat-titlebar:focus-visible { outline: 2px solid color-mix(in srgb, var(--focus) 70%, transparent); outline-offset: 2px; }
 .window-chat-title { min-width: 0; overflow: hidden; color: var(--text); font-size: 13px; font-weight: 620; letter-spacing: -0.01em; text-overflow: ellipsis; white-space: nowrap; }
@@ -154,6 +158,7 @@ button:focus-visible, textarea:focus-visible { outline: 3px solid color-mix(in s
   background: var(--sidebar);
   border-right: 1px solid var(--separator);
   backdrop-filter: blur(28px) saturate(150%);
+  -webkit-backdrop-filter: blur(28px) saturate(150%);
 }
 
 .brand { display: flex; align-items: center; gap: 11px; padding: 0 9px 26px; }
@@ -190,7 +195,8 @@ button:focus-visible, textarea:focus-visible { outline: 3px solid color-mix(in s
 
 .conversation-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; border-radius: 9px; transition: background 140ms ease, box-shadow 140ms ease; }
 .conversation-row:hover { background: color-mix(in srgb, var(--material) 72%, transparent); }
-.conversation-row.active { background: var(--material-strong); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07), inset 0 1px rgba(255, 255, 255, 0.3); }
+.conversation-row.active { background: transparent; box-shadow: none; }
+.conversation-row.active .conversation-title { font-weight: 620; }
 .conversation {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -217,7 +223,18 @@ button:focus-visible, textarea:focus-visible { outline: 3px solid color-mix(in s
 .chat-header::after { position: absolute; right: 0; bottom: -18px; left: 0; height: 18px; background: linear-gradient(to bottom, color-mix(in srgb, var(--content) 78%, transparent), transparent); content: ""; pointer-events: none; }
 .eyebrow { color: var(--tertiary); font-size: 10px; font-weight: 700; letter-spacing: 0.09em; line-height: 1.2; }.chat-header h2 { margin-top: 5px; font-size: 20px; font-weight: 690; letter-spacing: -0.025em; line-height: 1.1; }
 .theme-toggle { display: grid; width: 34px; height: 34px; place-items: center; border: 0; border-radius: 50%; background: var(--fill); color: var(--secondary); transition: background 140ms ease, color 140ms ease, transform 100ms ease-out; }.theme-toggle:hover { background: var(--fill-hover); color: var(--text); }
-.titlebar-theme-toggle { margin-top: 10px; }
+.titlebar-theme-toggle {
+  width: 28px;
+  height: 28px;
+  margin-top: 10px;
+  border: 1px solid color-mix(in srgb, var(--separator) 88%, transparent);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--fill) 84%, transparent);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.18), 0 1px 2px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(16px) saturate(150%);
+}
+.titlebar-theme-toggle:hover { border-color: color-mix(in srgb, var(--separator) 100%, transparent); background: var(--fill-hover); }
+.titlebar-theme-toggle:active { transform: scale(0.96); }
 
 .error-banner { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin: 12px 24px 0; padding: 10px 14px; border: 1px solid color-mix(in srgb, var(--danger) 22%, transparent); border-radius: 10px; background: color-mix(in srgb, var(--danger-fill) 72%, var(--material)); color: var(--danger); font-size: 12px; }.error-banner div { display: grid; gap: 2px; min-width: 0; }.error-banner strong { font-weight: 650; }.error-banner span { overflow: hidden; color: var(--secondary); text-overflow: ellipsis; white-space: nowrap; }.error-banner button { display: grid; width: 25px; height: 25px; place-items: center; border: 0; border-radius: 6px; background: transparent; color: var(--danger); }.error-banner button:hover { background: var(--danger-fill); }
 
