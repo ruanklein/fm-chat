@@ -213,7 +213,7 @@ button:focus-visible, textarea:focus-visible { outline: 3px solid color-mix(in s
 }
 .conversation-title { min-width: 0; overflow: hidden; font-size: 13px; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
 .conversation-date { color: var(--tertiary); font-size: 10px; font-variant-numeric: tabular-nums; }
-.delete-chat { display: grid; width: 29px; height: 29px; place-items: center; margin-right: 4px; border: 0; border-radius: 7px; background: transparent; color: var(--tertiary); opacity: 0; transition: background 140ms ease, color 140ms ease, opacity 140ms ease, transform 100ms ease-out; }
+.delete-chat { position: relative; top: 1px; display: grid; width: 29px; height: 29px; place-items: center; margin-right: 4px; border: 0; border-radius: 7px; background: transparent; color: var(--tertiary); opacity: 0; transition: background 140ms ease, color 140ms ease, opacity 140ms ease, transform 100ms ease-out; }
 .conversation-row:hover .delete-chat, .conversation-row.active .delete-chat, .delete-chat:focus-visible { opacity: 1; }
 .delete-chat:hover { background: var(--danger-fill); color: var(--danger); }.delete-chat:active { transform: scale(0.92); }.delete-chat:disabled { opacity: 0.28; }
 
