@@ -5,7 +5,7 @@
 <h1 align="center">FM Chat</h1>
 
 <p align="center">
-  A focused macOS chat for Apple's on-device Foundation Models, powered by <a href="https://github.com/ruanklein/fmgo">fmgo</a>.
+  A focused macOS chat for Apple's on-device Foundation Models, powered by <a href="https://github.com/ruanklein/fmgo">fmgo</a> &amp; <a href="https://wails.io">Wails</a>.
 </p>
 
 <p align="center">
