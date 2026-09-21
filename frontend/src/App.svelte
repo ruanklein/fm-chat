@@ -61,12 +61,15 @@
       refreshConversations()
     })
     initialize()
+    const onMessagesClick = (event: MouseEvent) => { void handleCodeCopy(event) }
+    messagesContainer.addEventListener('click', onMessagesClick)
 
     return () => {
       removeChunkListener()
       removeCompleteListener()
       removeErrorListener()
       removeThemeListener()
+      messagesContainer.removeEventListener('click', onMessagesClick)
     }
   })
 
@@ -223,6 +226,40 @@
   }
 
   function cancelGeneration() { if (activeConversation) CancelGeneration(activeConversation.id) }
+  async function handleCodeCopy(event: MouseEvent) {
+    const target = event.target as HTMLElement
+    const button = target.closest<HTMLButtonElement>('[data-copy-code]')
+    if (!button) return
+
+    const code = button.closest('pre')?.querySelector('code')?.textContent ?? ''
+    if (!code) return
+
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(code)
+      } else {
+        const textarea = document.createElement('textarea')
+        textarea.value = code
+        textarea.style.position = 'fixed'
+        textarea.style.opacity = '0'
+        document.body.appendChild(textarea)
+        textarea.select()
+        document.execCommand('copy')
+        textarea.remove()
+      }
+      button.classList.add('copied')
+      button.setAttribute('aria-label', 'Code copied')
+      button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg><span>Copied</span>'
+      window.setTimeout(() => {
+        if (!button.isConnected) return
+        button.classList.remove('copied')
+        button.setAttribute('aria-label', 'Copy code')
+        button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'
+      }, 1500)
+    } catch {
+      button.setAttribute('aria-label', 'Copy failed')
+    }
+  }
   function handleComposerKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' && event.metaKey) { event.preventDefault(); sendMessage() }
   }
