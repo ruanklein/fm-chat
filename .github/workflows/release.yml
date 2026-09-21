@@ -1,0 +1,87 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build macOS application
+    runs-on: macos-14
+
+    steps:
+      - name: Check out release tag
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Check frontend
+        working-directory: frontend
+        run: npm run check
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
+      - name: Test Go backend
+        run: go test ./...
+
+      - name: Install Wails CLI
+        run: |
+          go install github.com/wailsapp/wails/v2/cmd/wails@v2.16.0
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+
+      - name: Build macOS application
+        run: wails build -clean -platform darwin/arm64 -s
+
+      - name: Package application
+        id: package
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+
+          app_path="build/bin/fm-chat.app"
+          archive="fm-chat-${RELEASE_TAG}-macos-arm64.app.zip"
+
+          test -d "$app_path"
+          ditto -c -k --sequesterRsrc --keepParent "$app_path" "$archive"
+          shasum -a 256 "$archive" > "${archive}.sha256"
+
+          echo "archive=${archive}" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+          ARCHIVE: ${{ steps.package.outputs.archive }}
+        run: |
+          set -euo pipefail
+
+          gh release create "$RELEASE_TAG" \
+            "$ARCHIVE" \
+            "${ARCHIVE}.sha256" \
+            --repo "$GITHUB_REPOSITORY" \
+            --verify-tag \
+            --title "FM Chat ${RELEASE_TAG}" \
+            --generate-notes \
+            --notes "This release contains an unsigned macOS application. macOS may require manual confirmation in Gatekeeper before opening it."
