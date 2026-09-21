@@ -4,6 +4,7 @@
   import { CancelGeneration, ChooseImages, CreateConversation, DeleteConversation, GetConversation, GetModelStatus, GetUserAvatar, ListConversations, SendMessage } from '../wailsjs/go/main/App.js'
   import { BrowserOpenURL, EventsOn, Quit, WindowMinimise, WindowToggleMaximise } from '../wailsjs/runtime/runtime.js'
   import fmChatIcon from './assets/images/fm-chat.png'
+  import { renderMarkdown } from './lib/markdown'
 
   type Attachment = { id: string; name: string; mimeType: string }
   type Message = { id: string; role: string; content: string; createdAt: string; attachments: Attachment[] }
@@ -292,7 +293,7 @@
       {:else}
         <div class="message-list">
           {#each activeConversation.messages as message (message.id)}
-            <article class:assistant={message.role === 'assistant'} class="message"><div class="avatar">{#if message.role === 'assistant'}<img class:thinking={message.id === generatingMessageID} src={fmChatIcon} alt="FM Chat" />{:else if userAvatar}<img src={userAvatar} alt="You" />{:else}<span>You</span>{/if}</div><div class="message-body"><div class="message-meta"><strong>{message.role === 'assistant' ? 'FM Chat' : 'You'}</strong><span>{relativeDate(message.createdAt)}</span></div>{#if message.attachments.length > 0}<div class="attachment-summary">{#each message.attachments as attachment (attachment.id)}<span>▧ {attachment.name}</span>{/each}</div>{/if}{#if message.content}<p class="message-content">{message.content}</p>{:else if message.role === 'assistant' && message.id === generatingMessageID}<span class="typing"><i></i><i></i><i></i></span>{/if}</div></article>
+            <article class:assistant={message.role === 'assistant'} class="message"><div class="avatar">{#if message.role === 'assistant'}<img class:thinking={message.id === generatingMessageID} src={fmChatIcon} alt="FM Chat" />{:else if userAvatar}<img src={userAvatar} alt="You" />{:else}<span>You</span>{/if}</div><div class="message-body"><div class="message-meta"><strong>{message.role === 'assistant' ? 'FM Chat' : 'You'}</strong><span>{relativeDate(message.createdAt)}</span></div>{#if message.attachments.length > 0}<div class="attachment-summary">{#each message.attachments as attachment (attachment.id)}<span>▧ {attachment.name}</span>{/each}</div>{/if}{#if message.content}{#if message.role === 'assistant'}<div class="message-content">{@html renderMarkdown(message.content)}</div>{:else}<p class="message-content">{message.content}</p>{/if}{:else if message.role === 'assistant' && message.id === generatingMessageID}<span class="typing"><i></i><i></i><i></i></span>{/if}</div></article>
           {/each}
         </div>
       {/if}
