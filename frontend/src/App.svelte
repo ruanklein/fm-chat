@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { ArrowUp, Minus, Moon, Paperclip, Plus, Square, Sun, Trash2, X } from '@lucide/svelte'
+  import { ArrowUp, Moon, Paperclip, Plus, Square, Sun, Trash2, X } from '@lucide/svelte'
   import { CancelGeneration, ChooseImages, CreateConversation, DeleteConversation, GetConversation, GetModelStatus, GetUserAvatar, ListConversations, SendMessage } from '../wailsjs/go/main/App.js'
-  import { BrowserOpenURL, EventsOn, Quit, WindowMinimise } from '../wailsjs/runtime/runtime.js'
+  import { BrowserOpenURL, EventsOn, Quit, WindowMinimise, WindowToggleMaximise } from '../wailsjs/runtime/runtime.js'
   import fmChatIcon from './assets/images/fm-chat.png'
 
   type Attachment = { id: string; name: string; mimeType: string }
@@ -22,6 +22,7 @@
   let errorMessage = $state('')
   let conversationToDelete = $state<Conversation | null>(null)
   let theme = $state<'light' | 'dark'>('light')
+  let windowFocused = $state(true)
   let composer: HTMLTextAreaElement
   let messagesContainer: HTMLDivElement
   let deleteTrigger: HTMLButtonElement
@@ -31,6 +32,7 @@
   const canSend = $derived(modelStatus.available && !isGenerating && (draft.trim().length > 0 || attachments.length > 0))
 
   onMount(() => {
+    windowFocused = document.hasFocus()
     const removeThemeListener = initializeTheme()
     const removeChunkListener = EventsOn('chat:chunk', (event: ChatEvent) => {
       if (event.conversationID !== activeConversation?.id) return
@@ -237,14 +239,25 @@
 
 <svelte:head><title>FM Chat</title></svelte:head>
 
-<svelte:window onkeydown={(event) => event.key === 'Escape' && conversationToDelete && dismissDeletion()} />
+<svelte:window
+  onkeydown={(event) => event.key === 'Escape' && conversationToDelete && dismissDeletion()}
+  onfocus={() => (windowFocused = true)}
+  onblur={() => (windowFocused = false)}
+/>
 
 <div class="window-shell">
-  <header class="window-titlebar" style="--wails-draggable: drag">
+  <header class={`window-titlebar${windowFocused ? '' : ' window-inactive'}`} style="--wails-draggable: drag">
     <div class="window-titlebar-sidebar">
       <div class="window-controls">
-        <button class="window-control close-control" style="--wails-draggable: no-drag" aria-label="Close FM Chat" onclick={() => Quit()}><X size={8} strokeWidth={2.6} /></button>
-        <button class="window-control minimize-control" style="--wails-draggable: no-drag" aria-label="Minimize FM Chat" onclick={() => WindowMinimise()}><Minus size={8} strokeWidth={2.6} /></button>
+        <button class="window-control close-control" style="--wails-draggable: no-drag" aria-label="Close FM Chat" onclick={() => Quit()}>
+          <svg class="traffic-light-glyph" viewBox="0 0 12 12" aria-hidden="true"><path d="m4 4 4 4m0-4L4 8" /></svg>
+        </button>
+        <button class="window-control minimize-control" style="--wails-draggable: no-drag" aria-label="Minimize FM Chat" onclick={() => WindowMinimise()}>
+          <svg class="traffic-light-glyph" viewBox="0 0 12 12" aria-hidden="true"><path d="M3.25 6h5.5" /></svg>
+        </button>
+        <button class="window-control maximize-control" style="--wails-draggable: no-drag" aria-label="Maximize or restore FM Chat" onclick={() => WindowToggleMaximise()}>
+          <svg class="traffic-light-glyph" viewBox="0 0 12 12" aria-hidden="true"><path d="M4.25 3.25h4.5v4.5M7.75 3.25l-4.5 4.5M7.75 8.75h-4.5v-4.5" /></svg>
+        </button>
       </div>
       <button class="new-chat-titlebar" style="--wails-draggable: no-drag" aria-label="New chat" onclick={createConversation}><Plus size={15} strokeWidth={2.1} /></button>
     </div>

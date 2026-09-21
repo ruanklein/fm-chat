@@ -93,12 +93,46 @@ button:focus-visible, textarea:focus-visible { outline: 3px solid color-mix(in s
 .new-chat-titlebar:active { transform: scale(0.92); }
 .new-chat-titlebar:focus-visible { outline: 2px solid color-mix(in srgb, var(--focus) 70%, transparent); outline-offset: 2px; }
 .window-chat-title { min-width: 0; overflow: hidden; color: var(--text); font-size: 13px; font-weight: 620; letter-spacing: -0.01em; text-overflow: ellipsis; white-space: nowrap; }
-.window-control { display: grid; width: 13px; height: 13px; place-items: center; padding: 0; border: 0; border-radius: 50%; color: transparent; transition: filter 140ms ease, transform 100ms ease-out; }
-.window-control:hover { filter: brightness(0.9) saturate(1.15); color: color-mix(in srgb, currentColor 70%, #000); }
-.window-control:active { transform: scale(0.9); }
-.window-control:focus-visible { outline: 2px solid color-mix(in srgb, var(--focus) 70%, transparent); outline-offset: 2px; }
-.close-control { background: #ff5f57; color: #7b1712; }
-.minimize-control { background: #febc2e; color: #7d4d00; }
+.window-control {
+  display: grid;
+  width: 14px;
+  height: 14px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(42, 25, 25, 0.22);
+  border-radius: 50%;
+  color: transparent;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.52), inset 0 -1px 1px rgba(30, 30, 30, 0.18), 0 0.5px 1px rgba(0, 0, 0, 0.14);
+  transition: filter 140ms ease, box-shadow 140ms ease, transform 180ms cubic-bezier(.2, .9, .25, 1.35);
+}
+.window-control:hover,
+.window-controls:hover .window-control,
+.window-control:focus-visible {
+  filter: saturate(1.08) brightness(0.96);
+  color: var(--traffic-glyph);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.62), inset 0 -1px 1px rgba(30, 30, 30, 0.2), 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+.window-control:active { transform: scale(0.84); filter: saturate(0.94) brightness(0.88); }
+.window-control:focus-visible { outline: 2px solid color-mix(in srgb, var(--focus) 70%, transparent); outline-offset: 3px; }
+.traffic-light-glyph { width: 10px; height: 10px; overflow: visible; opacity: 0; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.65; transition: opacity 100ms ease, transform 180ms cubic-bezier(.2, .9, .25, 1.35); }
+.window-controls:hover .traffic-light-glyph,
+.window-control:focus-visible .traffic-light-glyph { opacity: 1; transform: scale(1.02); }
+.close-control { --traffic-glyph: #67100d; background: radial-gradient(circle at 36% 28%, #ff827a 0%, #ff625a 47%, #e94b45 100%); }
+.minimize-control { --traffic-glyph: #684000; background: radial-gradient(circle at 36% 28%, #ffd66b 0%, #ffc13a 47%, #e6a51e 100%); border-color: rgba(91, 59, 9, 0.25); }
+.maximize-control { --traffic-glyph: #124f16; background: radial-gradient(circle at 36% 28%, #69d96b 0%, #45c34c 47%, #2fa938 100%); border-color: rgba(18, 78, 20, 0.25); }
+.maximize-control .traffic-light-glyph { width: 10.5px; height: 10.5px; stroke-width: 1.45; }
+
+.window-titlebar.window-inactive .window-control {
+  filter: grayscale(1) saturate(0.08) brightness(0.68);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), inset 0 -1px 1px rgba(0, 0, 0, 0.2), 0 0.5px 1px rgba(0, 0, 0, 0.2);
+}
+.window-titlebar.window-inactive .window-control:hover,
+.window-titlebar.window-inactive .window-controls:hover .window-control,
+.window-titlebar.window-inactive .window-control:focus-visible {
+  filter: grayscale(0.78) saturate(0.18) brightness(0.76);
+}
+.window-titlebar.window-inactive .window-control:focus-visible { outline-color: rgba(180, 190, 205, 0.7); }
 
 .app-shell {
   display: grid;
