@@ -17,8 +17,11 @@ func main() {
 		Title:     "FM Chat",
 		Width:     1180,
 		Height:    780,
+		Frameless: true,
 		MinWidth:  900,
 		MinHeight: 600,
+		CSSDragProperty: "--wails-draggable",
+		CSSDragValue:    "drag",
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},

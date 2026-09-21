@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { ArrowUp, Moon, Paperclip, Plus, Square, Sun, Trash2, X } from '@lucide/svelte'
+  import { ArrowUp, Minus, Moon, Paperclip, Plus, Square, Sun, Trash2, X } from '@lucide/svelte'
   import { CancelGeneration, ChooseImages, CreateConversation, DeleteConversation, GetConversation, GetModelStatus, GetUserAvatar, ListConversations, SendMessage } from '../wailsjs/go/main/App.js'
-  import { BrowserOpenURL, EventsOn } from '../wailsjs/runtime/runtime.js'
+  import { BrowserOpenURL, EventsOn, Quit, WindowMinimise } from '../wailsjs/runtime/runtime.js'
   import fmChatIcon from './assets/images/fm-chat.png'
 
   type Attachment = { id: string; name: string; mimeType: string }
@@ -239,10 +239,25 @@
 
 <svelte:window onkeydown={(event) => event.key === 'Escape' && conversationToDelete && dismissDeletion()} />
 
-<main class="app-shell">
-  <aside class="sidebar">
-    <div class="brand"><img class="brand-mark" src={fmChatIcon} alt="FM Chat" /><div><h1>FM Chat</h1><p>On-device intelligence</p></div></div>
-    <button class="new-chat" onclick={createConversation}><Plus class="new-chat-icon" size={16} strokeWidth={2.2} /><span>New chat</span></button>
+<div class="window-shell">
+  <header class="window-titlebar" style="--wails-draggable: drag">
+    <div class="window-titlebar-sidebar">
+      <div class="window-controls">
+        <button class="window-control close-control" style="--wails-draggable: no-drag" aria-label="Close FM Chat" onclick={() => Quit()}><X size={8} strokeWidth={2.6} /></button>
+        <button class="window-control minimize-control" style="--wails-draggable: no-drag" aria-label="Minimize FM Chat" onclick={() => WindowMinimise()}><Minus size={8} strokeWidth={2.6} /></button>
+      </div>
+      <button class="new-chat-titlebar" style="--wails-draggable: no-drag" aria-label="New chat" onclick={createConversation}><Plus size={15} strokeWidth={2.1} /></button>
+    </div>
+    <div class="window-titlebar-content">
+      <span class="window-chat-title">{activeConversation?.title ?? 'New chat'}</span>
+      <button class="theme-toggle titlebar-theme-toggle" style="--wails-draggable: no-drag" aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`} onclick={toggleTheme}>
+        {#if theme === 'dark'}<Sun size={16} strokeWidth={1.8} />{:else}<Moon size={16} strokeWidth={1.8} />{/if}
+      </button>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <aside class="sidebar">
     <div class="history-heading">CONVERSATIONS</div>
     <nav class="history" aria-label="Conversation history">
       {#if conversations.length === 0}<p class="empty-history">Your chats will appear here.</p>{/if}
@@ -254,10 +269,9 @@
       {/each}
     </nav>
     <a class="model-status fmgo-sidebar-credit" href="https://github.com/ruanklein/fmgo" onclick={openFmgo}><span class="status-dot"></span><span class="fmgo-credit-label">Built with fmgo</span></a>
-  </aside>
+    </aside>
 
-  <section class="chat-panel">
-    <header class="chat-header"><div><p class="eyebrow">FM CHAT</p><h2>{activeConversation?.title ?? 'New chat'}</h2></div><button class="theme-toggle" aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`} onclick={toggleTheme}>{#if theme === 'dark'}<Sun size={17} strokeWidth={1.8} />{:else}<Moon size={17} strokeWidth={1.8} />{/if}</button></header>
+    <section class="chat-panel">
     {#if errorMessage}<div class="error-banner" role="alert"><div><strong>Unable to complete that request.</strong><span>{errorMessage}</span></div><button aria-label="Dismiss error" onclick={() => (errorMessage = '')}><X size={16} /></button></div>{/if}
     <div class="messages" bind:this={messagesContainer}>
       {#if !activeConversation || activeConversation.messages.length === 0}
@@ -275,8 +289,9 @@
       <div class="composer"><button class="attach-button" aria-label="Attach images" onclick={chooseImages}><Paperclip size={18} strokeWidth={1.8} /></button><textarea bind:this={composer} bind:value={draft} aria-label="Message" oninput={resizeComposer} onkeydown={handleComposerKeydown} placeholder="Message FM Chat" rows="1"></textarea>{#if isGenerating}<button class="stop-button" aria-label="Stop generating" onclick={cancelGeneration}><Square size={12} fill="currentColor" /></button>{:else}<button class="send-button" aria-label="Send message" disabled={!canSend} onclick={sendMessage}><ArrowUp size={17} strokeWidth={2.3} /></button>{/if}</div>
       <p class="composer-note">⌘↵ to send</p>
     </footer>
-  </section>
-</main>
+    </section>
+  </main>
+</div>
 
 {#if conversationToDelete}
   <div class="confirmation-backdrop" role="presentation">
