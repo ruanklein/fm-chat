@@ -281,7 +281,7 @@
         </div>
       {/each}
     </nav>
-    <a class="model-status fmgo-sidebar-credit" href="https://github.com/ruanklein/fmgo" onclick={openFmgo}><span class="status-dot"></span><span class="fmgo-credit-label">Built with fmgo</span></a>
+    <a class="model-status fmgo-sidebar-credit" href="https://github.com/ruanklein/fmgo" onclick={openFmgo}><span class="fmgo-credit-label">Built with fmgo</span></a>
     </aside>
 
     <section class="chat-panel">
