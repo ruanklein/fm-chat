@@ -90,7 +90,7 @@ button:focus-visible, textarea:focus-visible { outline: 3px solid color-mix(in s
 }
 
 .window-titlebar-sidebar { display: flex; align-items: center; height: 34px; gap: 13px; padding: 0 14px; background: transparent; }
-.window-titlebar-content { display: flex; align-items: center; justify-content: space-between; height: 34px; padding: 0 14px 0 38px; background: transparent; }
+.window-titlebar-content { display: flex; align-items: center; justify-content: space-between; height: 34px; padding: 0 14px 0 38px; background: color-mix(in srgb, var(--toolbar) 74%, transparent); backdrop-filter: blur(18px) saturate(150%); -webkit-backdrop-filter: blur(18px) saturate(150%); }
 
 .window-controls { display: flex; align-items: center; gap: 8px; }
 .new-chat-titlebar { display: grid; width: 28px; height: 28px; place-items: center; margin-left: auto; padding: 0; border: 1px solid color-mix(in srgb, var(--separator) 90%, transparent); border-radius: 50%; background: color-mix(in srgb, var(--fill) 88%, transparent); color: var(--secondary); box-shadow: inset 0 1px rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.14); backdrop-filter: blur(16px) saturate(150%); transition: background 140ms ease, border-color 140ms ease, color 140ms ease, transform 100ms ease-out; }
@@ -219,7 +219,7 @@ button:focus-visible, textarea:focus-visible { outline: 3px solid color-mix(in s
 
 .model-status { display: flex; align-items: center; gap: 7px; margin-top: auto; padding: 14px 10px 1px; color: var(--secondary); font-size: 11px; letter-spacing: 0.005em; }.status-dot { width: 7px; height: 7px; flex: 0 0 auto; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 13%, transparent); }.model-status.ready { color: #2b8158; }:root[data-theme="dark"] .model-status.ready { color: #55c585; }
 
-.chat-panel { display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: hidden; padding-top: 34px; background: var(--content); }
+.chat-panel { display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: hidden; padding-top: 48px; background: var(--content); }
 .chat-header { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; min-height: 112px; padding: 53px 38px 15px; background: var(--toolbar); backdrop-filter: blur(24px) saturate(150%); }
 .chat-header::after { position: absolute; right: 0; bottom: -18px; left: 0; height: 18px; background: linear-gradient(to bottom, color-mix(in srgb, var(--content) 78%, transparent), transparent); content: ""; pointer-events: none; }
 .eyebrow { color: var(--tertiary); font-size: 10px; font-weight: 700; letter-spacing: 0.09em; line-height: 1.2; }.chat-header h2 { margin-top: 5px; font-size: 20px; font-weight: 690; letter-spacing: -0.025em; line-height: 1.1; }
