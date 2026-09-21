@@ -38,10 +38,8 @@ It runs the system model on-device, streams responses, persists conversations lo
 - On-device Foundation Models through fmgo.
 - Streaming responses with an active generation state.
 - Local conversation history and image storage.
-- macOS account avatar support with a safe fallback.
 - Image uploads for multimodal prompts.
 - Automatic light/dark appearance with a manual theme toggle.
-- macOS-style sidebar, composer, confirmation dialogs, and native app icon.
 
 ## Requirements
 
